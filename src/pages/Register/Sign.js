@@ -1,24 +1,54 @@
-import { Image, KeyboardAvoidingView, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Image, KeyboardAvoidingView, SafeAreaView, ScrollView, StyleSheet, Text, View } from 'react-native'
 import React, { useState } from 'react'
 import { register } from '../../../assets'
 import { TextInput, Title } from 'react-native-paper'
 import FilledButton from './../../components/Get Started/filledButton';
-import OutlineButton from './../../components/Get Started/outlineButton';
 import OR from '../../components/OR';
 import Bold from '../../components/Bold';
 import { useNavigation } from '@react-navigation/native';
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { auth } from '../../../firebaseConfig';
+import DefaultErrorModal from "../../components/DefaultErrorModal";
+import PageLoading from '../../components/PageLoading';
 
 export default function Login() {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
-    const [phone, setPhone] = useState('')
     const navigation = useNavigation()
+    const [errModalVisible, setErrModalVisible] = useState(false)
+    const [modalVisible, setVisible] = useState(false)
+
     const handleLogin = () => {
         navigation.navigate('Login')
     }
+
+    const handleClose = () => {
+        setErrModalVisible(false)
+    }
+
+    const handleStart = () => {
+        if (!email && !password) {
+            return;
+        }
+
+        createUserWithEmailAndPassword(auth, email, password)
+            .then(() => {
+                setVisible(true);
+                setTimeout(() => {
+                    navigation.navigate('Main');
+                    setVisible(false);
+                }, 2000)
+            })
+            .catch(() => {
+                setErrModalVisible(true);
+            })
+    }
+
     return (
         <KeyboardAvoidingView behavior='padding' style={styles.container}>
+            <DefaultErrorModal modalVisible={errModalVisible} onPress={handleClose} />
             <SafeAreaView style={styles.pageContainer}>
+                <PageLoading modalVisible={modalVisible} />
                 <View style={styles.imageContainer}>
                     <Image source={register} style={styles.image} />
                 </View>
@@ -50,18 +80,8 @@ export default function Login() {
                             }}
                             onChangeText={text => setPassword(text)}
                         />
-                        <TextInput
-                            mode="outlined"
-                            label="Phone"
-                            outlineColor='#DDD'
-                            activeOutlineColor='#10A37F'
-                            theme={{
-                                roundness: 12,
-                            }}
-                            onChangeText={text => setPhone(text)}
-                        />
                         <View style={{ height: '4%' }} />
-                        <FilledButton style={{ width: '100%', paddingVertical: 14, }} title={"Sign Up"} color={"#10A37F"} />
+                        <FilledButton style={{ width: '100%', paddingVertical: 14, }} onPress={handleStart} title={"Sign Up"} color={"#10A37F"} />
                         <View style={{ height: 0 }} />
                         <OR />
                         <View style={styles.haveAccountText}>

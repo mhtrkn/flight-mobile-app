@@ -1,7 +1,7 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Home, Search, Reservation, Profile } from './TabScreens';
-import { Octicons, Ionicons, FontAwesome, Feather } from '@expo/vector-icons';
-import { View, StyleSheet } from 'react-native';
+import { Search, Reservation, Profile } from './screens';
+import HomeStack from './TabScreens/HomeStack';
+import { Octicons, Ionicons, FontAwesome } from '@expo/vector-icons';
 
 const Tab = createBottomTabNavigator();
 
@@ -14,15 +14,15 @@ export default function Main() {
                 tabBarShowLabel: false
             }}>
             <Tab.Screen
-                name="Home"
-                component={Home}
+                name="Home Stack"
+                component={HomeStack}
                 options={{
                     tabBarIcon: ({ focused }) => (
                         <Octicons name="home" size={24} color={focused ? "#10A37F" : "#DDD"} />
                     ),
                 }}
             />
-            <Tab.Screen
+            {/*<Tab.Screen
                 name="Search"
                 component={Search}
                 options={{
@@ -39,6 +39,7 @@ export default function Main() {
                     ),
                 }}
             />
+            */}
             <Tab.Screen
                 name="Profile"
                 component={Profile}

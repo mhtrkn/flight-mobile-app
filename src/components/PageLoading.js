@@ -1,46 +1,44 @@
-import React, { useState } from 'react';
-import { StyleSheet, SafeAreaView, Modal } from 'react-native';
+import React from 'react';
+import { StyleSheet, View, Modal } from 'react-native';
 import LottieView from 'lottie-react-native';
 
-export default function PageLoading({ visible }) {
-
-    const [modalVisible, setVisible] = useState(visible)
+export default function PageLoading({ modalVisible }) {
 
     return (
-        <View style={styles.container}>
-            <Modal visible={modalVisible} transparent>
-                <View style={styles.modalContainer}>
-                    <View style={styles.animationContainer}>
-                        <LottieView
-                            source={require("../../assets/plane.json")}
-                            autoPlay
-                            loop
-                        />
-                    </View>
+        <Modal visible={modalVisible} transparent>
+            <View style={styles.modalContainer}>
+                <View style={styles.animationContainer}>
+                    <LottieView
+                        source={require("../../assets/flight.json")}
+                        autoPlay
+                        loop
+                        speed={1.2}
+                        style={{
+                            width: 200,
+                            height: 200
+                        }}
+                    />
                 </View>
-            </Modal>
-        </View>
+            </View>
+        </Modal>
     );
 
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center'
-    },
     modalContainer: {
         flex: 1,
-        backgroundColor: 'rgba(0, 0, 0, 0.25)',
+        backgroundColor: 'rgba(0, 0, 0, 0.35)',
         alignItems: 'center',
         justifyContent: 'center',
     },
     animationContainer: {
-        width: '80%',
-        height: '80%',
-        backgroundColor: '#fff',
-        borderRadius: 20,
+        width: 180,
+        height: 180,
+        backgroundColor: '#EEEEEF',
+        borderWidth: 5,
+        borderColor: '#FFF',
+        borderRadius: 200,
         alignItems: 'center',
         justifyContent: 'center',
     },

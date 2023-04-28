@@ -1,16 +1,15 @@
-import { Alert, Image, Modal, KeyboardAvoidingView, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { useState, useCallback } from 'react'
+import { Image, KeyboardAvoidingView, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import React, { useState } from 'react'
 import { register } from '../../../assets'
 import { TextInput, Title } from 'react-native-paper'
 import FilledButton from './../../components/Get Started/filledButton';
 import OutlineButton from './../../components/Get Started/outlineButton';
 import OR from '../../components/OR';
-import { useDispatch, useSelector } from 'react-redux';
-import { isAuth } from '../../redux/actions';
+import { useDispatch } from 'react-redux';
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from '../../../firebaseConfig'
-import LottieView from 'lottie-react-native';
 import PageLoading from '../../components/PageLoading';
+import DefaultErrorModal from "../../components/DefaultErrorModal";
 
 export default function Login({ navigation }) {
     const dispatch = useDispatch()
@@ -22,46 +21,36 @@ export default function Login({ navigation }) {
     }
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
+    const [errModalVisible, setErrModalVisible] = useState(false)
     const [modalVisible, setVisible] = useState(false)
+
     const handleStart = () => {
-        setVisible(true)
         if (!email && !password) {
-            return null
+            return;
         }
 
         signInWithEmailAndPassword(auth, email, password)
             .then(() => {
-                console.log("i'm in")
+                setVisible(true);
+                setTimeout(() => {
+                    navigation.navigate('Main');
+                    setVisible(false);
+                }, 2000)
             })
-            .catch((error) => {
-                console.log('Error: ', error)
+            .catch(() => {
+                setErrModalVisible(true);
             })
+    }
 
-        setTimeout(() => {
-            navigation.navigate('Main')
-            setVisible(false)
-        }, 2000)
+    const handleClose = () => {
+        setErrModalVisible(false)
     }
 
     return (
         <KeyboardAvoidingView behavior='padding' style={styles.container}>
+            <DefaultErrorModal modalVisible={errModalVisible} onPress={handleClose} />
             <SafeAreaView style={styles.pageContainer}>
-                <Modal visible={modalVisible} transparent>
-                    <View style={styles.modalContainer}>
-                        <View style={styles.animationContainer}>
-                            <LottieView
-                                source={require("../../../assets/flight.json")}
-                                autoPlay
-                                loop
-                                speed={1.2}
-                                style={{
-                                    width: 200,
-                                    height: 200
-                                }}
-                            />
-                        </View>
-                    </View>
-                </Modal>
+                <PageLoading modalVisible={modalVisible} />
                 <View style={styles.imageContainer}>
                     <Image source={register} style={styles.image} />
                 </View>
@@ -118,22 +107,6 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: 'white'
-    },
-    modalContainer: {
-        flex: 1,
-        backgroundColor: 'rgba(0, 0, 0, 0.35)',
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    animationContainer: {
-        width: 200,
-        height: 200,
-        backgroundColor: '#EEEEEF',
-        borderWidth: 5,
-        borderColor: '#FFF',
-        borderRadius: 200,
-        alignItems: 'center',
-        justifyContent: 'center',
     },
     pageContainer: {
         flex: 1,

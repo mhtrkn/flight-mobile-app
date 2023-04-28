@@ -15,12 +15,12 @@ const GetStarted = () => {
     const data = [
         {
             'id': 1,
-            'photo': `${getStartedLogin}`,
+            'photo': getStartedLogin,
             'description': "Welcome to your account! Log in to take advantage of all the benefits of our app."
         },
         {
             'id': 2,
-            'photo': `${getStartedSign}`,
+            'photo': getStartedSign,
             'description': "Welcome to your account! Log in to take advantage of all the benefits app."
         },
         {

@@ -1,11 +1,16 @@
 import { Image, ImageBackground, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React from 'react'
-import { background } from '../../../assets'
-import SearchComponent from '../../components/SearchComponent'
-import Flights from '../../components/Flights'
+import { background } from '../../../../assets'
+import SearchComponent from '../../../components/SearchComponent'
+import Flights from '../../../components/Flights'
 import { FontAwesome } from '@expo/vector-icons';
 
-export default function Home() {
+export default function Home({navigation}) {
+
+    const handleRouteProfile = () => {
+        navigation.navigate('Profile')
+    }
+
     return (
         <View style={styles.container}>
             <ImageBackground source={background} style={styles.imageContainer} resizeMode='cover'>
@@ -13,7 +18,7 @@ export default function Home() {
                     <Text style={styles.headerText}>
                         Lets find your{"\n"}flight 👋
                     </Text>
-                    <TouchableOpacity style={styles.avatar}>
+                    <TouchableOpacity style={styles.avatar} onPress={handleRouteProfile}>
                         <FontAwesome name="user" size={30} color="#FFA500" />
                     </TouchableOpacity>
                 </SafeAreaView>
@@ -47,7 +52,8 @@ const styles = StyleSheet.create({
     },
     headerText: {
         fontSize: 32,
-        color: '#EEE'
+        color: '#EEE',
+        fontWeight: 600
     },
     avatar: {
         backgroundColor: '#EEE',
