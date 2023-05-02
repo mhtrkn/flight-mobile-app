@@ -9,7 +9,7 @@ import { dateTimePickerModal } from '../redux/actions';
 import { formatDate } from '../util/formatDate';
 import PageLoading from './PageLoading';
 import { useNavigation } from '@react-navigation/native';
-import DateTimePicker from '@react-native-community/datetimepicker';
+import { getCompatibleTicket } from '../util/getCompatibleTicket';
 
 export default function SearchComponent() {
     const dispatch = useDispatch();
@@ -21,16 +21,33 @@ export default function SearchComponent() {
     const [from, setFrom] = useState('')
     const [to, setTo] = useState('')
     const [loading, setLoading] = useState(false)
+    const [passengerCount, setPassengerCount] = useState(1)
     const navigation = useNavigation()
     const handleOpenModal = (event, name) => {
         setDeparture(name === 'departure' ? true : false)
         dispatch(dateTimePickerModal())
     }
 
+    const handlePassengerCount = (type) => {
+        if (type === "PLUS") {
+            setPassengerCount(passengerCount + 1)
+        } else {
+            setPassengerCount(passengerCount === 1 ? 1 : (passengerCount > 1 && passengerCount - 1))
+        }
+    }
+
+    const data = {
+        from, to, departure, returnTime, passengerCount
+    }
+
+    const searchData = getCompatibleTicket(data)
+
+    console.log('search data: ', searchData)
+
     const handleSearch = () => {
         if (from && to) {
             setLoading(true)
-            navigation.navigate('Search Details')
+            navigation.navigate('Search Details', { "data": searchData })
             setTimeout(() => {
                 setLoading(false)
             }, 3000)
@@ -109,6 +126,31 @@ export default function SearchComponent() {
                     <AntDesign name="calendar" size={24} color="#10A37F" />
                 </TouchableOpacity>
             </View>
+            <View style={styles.passengerContainer}>
+                <TextInput
+                    mode="outlined"
+                    label="Seat"
+                    editable={false}
+                    style={styles.passengerInput}
+                    theme={{
+                        roundness: 6,
+                    }}
+                    activeOutlineColor="#10A37F"
+                    outlineColor="#DDD"
+                    left={<TextInput.Affix text="Seat | " />}
+                />
+                <View style={styles.passengerCount}>
+                    <TouchableOpacity style={styles.counterBox} onPress={() => handlePassengerCount("MINUS")}>
+                        <AntDesign name="minus" size={20} color="#333" />
+                    </TouchableOpacity>
+                    <Text>
+                        {passengerCount}
+                    </Text>
+                    <TouchableOpacity style={styles.counterBox} onPress={() => handlePassengerCount("PLUS")}>
+                        <AntDesign name="plus" size={20} color="#333" />
+                    </TouchableOpacity>
+                </View>
+            </View>
             <View style={{ width: '100%' }}>
                 <FilledButton title={"Search"} onPress={handleSearch} textStyle={{ textTransform: 'none', fontSize: 20, fontWeight: 800 }} color={"#FFA500"} style={{ width: '100%', borderRadius: 12 }} />
             </View>
@@ -120,7 +162,7 @@ export default function SearchComponent() {
 const styles = StyleSheet.create({
     container: {
         width: '92.5%',
-        flex: .425,
+        flex: .5,
         backgroundColor: '#fff',
         borderRadius: 24,
         justifyContent: 'space-between',
@@ -190,5 +232,36 @@ const styles = StyleSheet.create({
     pickerText: {
         fontSize: 16,
         fontWeight: '500'
+    },
+    passengerContainer: {
+        width: '100%',
+        position: 'relative',
+    },
+    passengerInput: {
+        width: '100%',
+        backgroundColor: '#FFFFFE',
+        fontSize: 18,
+        fontWeight: '500',
+        textTransform: 'capitalize'
+    },
+    passengerCount: {
+        flexDirection: 'row',
+        justifyContent: 'flex-end',
+        alignItems: 'center',
+        gap: 12,
+        width: '100%',
+        position: 'absolute',
+        top: 15,
+        right: 10,
+    },
+    counterBox: {
+        paddingVertical: 6,
+        paddingHorizontal: 8,
+        borderWidth: .2,
+        borderColor: '#DDD',
+        justifyContent: 'center',
+        alignItems: 'center',
+        textAlign: 'center',
+        borderRadius: 6
     }
 })

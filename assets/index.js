@@ -5,9 +5,10 @@ import register from "./register.jpg"
 import forgotPass from "./forgot.jpg"
 import plane from "./plane.png"
 import background from "./background.png"
-
+import notFoundTicket from "./not-found-ticket.png"
 
 export {
+    notFoundTicket,
     forgotPass,
     register,
     plane,

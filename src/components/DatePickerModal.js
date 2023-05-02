@@ -37,15 +37,14 @@ export default function DatePickerModal({ departure }) {
 
     return (
         <View style={styles.container}>
-            <Modal visible={true} transparent={true}>
+            <Modal visible={true} transparent={true} animationType="fade">
                 <TouchableOpacity style={styles.modalBackground} onPress={handleClose}>
                     <View style={styles.modalContainer}>
                         <DateTimePicker
                             testID="dateTimePicker"
                             value={date}
-                            mode={"datetime"}
                             is24Hour={true}
-                            display={"inline"}
+                            display={"spinner"}
                             onChange={onChange}
                             accentColor="#10A37F"
                             onConfirm={onChange}
@@ -77,12 +76,13 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     modalContainer: {
-        backgroundColor: '#222',
-        padding: 20,
-        width:'95%',
+        backgroundColor: '#111',
+        padding: 30,
+        width:'100%',
+        position:'absolute',
+        bottom: 0,
+        paddingBottom: 50,
         justifyContent: 'center',
-        paddingRight: 32,
-        borderRadius: 12,
         alignItems: 'center',
         shadowColor: "#333",
         shadowOffset: {
